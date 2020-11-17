@@ -20,7 +20,7 @@ For example:
 ```
 xrdfsls /store/group/lpcsusyphotons/TreeMakerRandS_BDTv2/ | grep Summer16v3.GJet > GJets_2016.txt
 ```
-
+## Running
 Once you have the filelists made you can go to MVA/tools and run BDT_strong.py to train and test the BDT:
 ```
 python BDT_strong.py -y1 2016 -s T5Wg_m1700.0d15xx -b GJets -nt 100 -md 10 -n T5Wg_m1700.0d15xx_2016
