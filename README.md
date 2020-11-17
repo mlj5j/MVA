@@ -5,10 +5,12 @@ This is used for training and testing a boosted decision tree for discrimating b
 ##  Getting Started
 Clone the repository to your workspace
 From the MVA directory do
-'''
+
+```
 mkdir Results
 mkdir filelists
-'''
+```
+
 The code gets file paths from a list in filelists/<filename>.txt and loads them into a TChain for training/testing the BDT.
 You have to make the filelist <filename>.txt yourself using xrdfsls as follows from the filelists directory:
 '''
