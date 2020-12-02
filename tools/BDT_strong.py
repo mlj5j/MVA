@@ -77,9 +77,10 @@ if args.mode == 'RandS':
      loader.AddVariable('mva_Pt_GG','F')
      loader.AddVariable('mva_ST_jets','F')
      loader.AddVariable('mva_min_dPhi','F')
-#     loader.AddVariable('HardMetMinusMet','F')
-     #loader.AddVariable('MinDPhiHardMetJets','F')
+     loader.AddVariable('mva_dPhi1','F')
+     loader.AddVariable('mva_dPhi2','F')
      loader.AddVariable('mva_dPhi_GGHardMET','F')
+     loader.AddSpectator('mva_Ngoodjets', 'I')
 #     loader.AddVariable('mass_GG','F')
 
 else:
@@ -115,8 +116,17 @@ if args.mode == 'RandS':
 else:
      loader.PrepareTrainingAndTestTree(sigcuts, bkgcuts, "SplitMode=random:!V")
 #Use BookMethod to specify BDT
+
 #factory.BookMethod(loader, TMVA.Types.kBDT, 'BDT_otherthing', '!H:!V:NTrees=200:MaxDepth=4:BoostType=AdaBoost:AdaBoostBeta=0.5:SeparationType=GiniIndex')
+
 factory.BookMethod(loader, TMVA.Types.kBDT, 'BDT_{0}trees_{1}maxdepth'.format(args.Ntrees, args.maxdepth), "NTrees={0}:MaxDepth={1}".format(args.Ntrees, args.maxdepth))
+
+factory.BookMethod(loader, TMVA.Types.kBDT, 'BDTB_{0}trees_{1}maxdepth'.format(args.Ntrees, args.maxdepth), "NTrees={0}:MaxDepth={1}:BoostType=Bagging".format(args.Ntrees, args.maxdepth))
+
+factory.BookMethod(loader, TMVA.Types.kBDT, 'BDTRA_{0}trees_{1}maxdepth'.format(args.Ntrees, args.maxdepth), "NTrees={0}:MaxDepth={1}:BoostType=RealAdaBoost".format(args.Ntrees, args.maxdepth))
+
+factory.BookMethod(loader, TMVA.Types.kBDT, 'BDTF{0}trees_{1}maxdepth'.format(args.Ntrees, args.maxdepth), "NTrees={0}:MaxDepth={1}:UseFisherCuts".format(args.Ntrees, args.maxdepth))
+
 #factory.BookMethod(loader, TMVA.Types.kBDT, 'BDT_15D', "NTrees=200:MaxDepth=15")
 #Train, test, and evaluate
 factory.TrainAllMethods()
