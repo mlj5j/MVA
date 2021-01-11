@@ -1,8 +1,8 @@
-# SUSY diphoton MVA
+## SUSY diphoton MVA
 
 This is used for training and testing a boosted decision tree for discrimating between real and fake MET.
 
-##  Getting Started
+#  Getting Started
 Clone the repository to your workspace
 
 #  Prepare files for MVA
@@ -20,10 +20,10 @@ Go to "submitjobs.py" in the tools directory and change the file being read to "
 Go back to the `submitcommands.sh`, comment the lines with "prepMVA", and uncomment the lines with "applyBDT.py".  This will submit jobs to condor to apply the BDT to all of the files.  
 
 
-#Ignore the rest of this README because it's older and needs to be updated.
+#  Ignore the rest of this README because it's older and needs to be updated.
 
 
-
+<!---
 ```
 mkdir Results
 mkdir filelists
@@ -44,3 +44,4 @@ Once you have the filelists made you can go to MVA/tools and run BDT_strong.py t
 python BDT_strong.py -y1 2016 -s T5Wg_m1700.0d15xx -b GJets -nt 100 -md 10 -n T5Wg_m1700.0d15xx_2016
 ```
 This would train a BDT using T5Wg files specified in ../filelists/T5Wg_m1700.0d15xx_2016.txt (1700 GeV gluino mass and neutralino mass from 1500-1599 GeV from 2016) with 100 trees with max depth of 10.  The ouput would have the string "T5Wg_m1700.0d15xx_2016" included in the name.
+--->
