@@ -49,26 +49,6 @@ Isdata = False
 if 'Run20' in fname:
     Isdata = True
 
-
-#for line in flist:
-#    if keyword not in line: continue
-#    if 'Run20' in line:
-#        Isdata = True
-#    if 'T5Wg' in line or 'T6Wg' in line:
-#        foutname = '../output/{0}'.format(line.split('/')[-1]).strip()
-#        foutname = foutname.rstrip('time0123456789.root') + 'mvaprep.root'
-#    else:
-#        foutname = '../output/{0}'.format(line.replace('.root','_mvaprep.root'))
-#    print foutname
-#    if '/store/' in line:
-#        ch.Add('root://cmseos.fnal.gov/{0}'.format(line.strip()))
-#        ccounter.Add('root://cmseos.fnal.gov/{0}'.format(line.strip()))
-#    else:
-#        print 'opening local files'
-#        ch.Add(line.strip())
-#        ccounter.Add(line.strip())
-
-
 n_evt = ccounter.GetEntries()
 print "tcounter should have {0} entries".format(n_evt)
 
@@ -83,10 +63,20 @@ entries = ch.GetEntries()
 EventWeight = np.zeros(1,dtype=float)
 mva_dPhi1 = np.zeros(1,dtype=float)
 mva_dPhi2 = np.zeros(1,dtype=float)
+mva_minOmega = np.zeros(1,dtype=float)
+
+xsec = np.zeros(1,dtype=float)
+
+IsEnriched = False
+if 'DoubleEMEnriched' in fname:
+    print 'updating xsection for GJet_DoubleEMEnriched process!'
+    ch.SetBranchAddress('CrossSection', xsec)
+    IsEnriched = True
 
 b_EventWeight = tree.Branch('EventWeight', EventWeight, 'EventWeight/D')
 b_mva_dPhi1 = tree.Branch('mva_dPhi1', mva_dPhi1, 'mva_dPhi1/D')
 b_mva_dPhi2 = tree.Branch('mva_dPhi2', mva_dPhi2, 'mva_dPhi2/D')
+b_mva_minOmega = tree.Branch('mva_minOmega', mva_minOmega, 'mva_minOmega/D')
 
 #entries = 5
 for j_entry in range(entries):
@@ -109,12 +99,36 @@ for j_entry in range(entries):
         dphi1 = dphi1 - 2*math.pi
     if dphi1 < -math.pi:
         dphi1 = dphi1 + 2*math.pi
+    
+    if IsEnriched:
+        xsec[0] = 113100.0
 
+    dphi = 99.0
+    minomega = 99.0
+    omegas = []
+    for jet in ch.JetsAUX:
+        if jet.Pt()>30:
+            dphi = jet.Phi() - ch.HardMETPhi
+            if dphi >= math.pi:
+                dphi = dphi - 2*math.pi
+            if dphi < -math.pi:
+                dphi = dphi + 2*math.pi
+            dphi = abs(dphi)
+#            print dphi
+            omegas.append(np.arctan(np.sin(min(dphi, 0.5*math.pi))/(jet.Pt()/ch.mva_HardMET)))
+
+    for omega in omegas:
+        #print omega
+        minomega = min(minomega, omega)
+
+    mva_minOmega[0] = minomega
+
+####----------------------------------------------------------
     dphi2 = ch.JetsAUX[1].Phi() - ch.HardMETPhi
     if dphi2 >= math.pi:
         dphi2 = dphi2 - 2*math.pi
     if dphi2 < -math.pi:
-        dphi = dphi2 + 2*math.pi
+        dphi2 = dphi2 + 2*math.pi
 
     mva_dPhi1[0] = abs(dphi1)
     mva_dPhi2[0] = abs(dphi2)

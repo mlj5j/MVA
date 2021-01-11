@@ -6,13 +6,14 @@ parser.add_argument("-analyzer", "--analyzer", type=str,default='tools/applyXsec
 parser.add_argument("-fin", "--fnamekeyword", type=str,default='Summer16.SMS-T1tttt_mGluino-1200_mLSP-800',help="file")
 parser.add_argument("-quickrun", "--quickrun", type=bool, default=False,help="Quick practice run (True, False)")
 parser.add_argument("-forcetemplates", "--forcetemplates", type=str, default=False,help="you can use this to override the template choice")
-
+parser.add_argument('-dout', '--directoryout', type=str, default='TreeMakerRandS_mvaprep', help='This is the directory where the output will go.  NOTE: This is not the full path!')
 
 args = parser.parse_args()
 
 fnamekeyword = args.fnamekeyword.strip()
 quickrun = args.quickrun
 analyzer = args.analyzer
+dout = args.directoryout
 
 istest = False
 skipFilesWithErrorFile = True
@@ -32,7 +33,9 @@ cwd = os.getcwd()
 
 #fnamefilename = 'usefulthings/filelistDiphotonBig.txt'
 #fnamefilename = 'usefulthings/filelist_test.txt'
-fnamefilename = 'filelists/filelist_training.txt'
+#fnamefilename = 'filelists/filelist_mvapreped.txt'
+
+fnamefilename = 'filelists/filelist_skimmed.txt'
 fnamefile = open(fnamefilename)
 
 
@@ -50,8 +53,10 @@ if 'Autumn18' in fnamekeyword:
 
 if 'ZGG' in fnamekeyword:
         sample = 'ZGGtonunuGG'
-if 'T6Wg' in fnamekeyword:
-        sample = 'signal'
+
+#if 'T6Wg' in fnamekeyword:
+#        sample = 'signal'
+
 
 if ( not os.path.exists(os.path.expandvars("$X509_USER_PROXY")) ):
     print "#### No GRID PROXY detected. Please do voms-proxy-init -voms cms before submitting Condor jobs ####.\nEXITING"
@@ -79,7 +84,7 @@ def main():
                 print 'skipping you...', errfilename
                 continue
         newsh = open('jobs/'+job+'.sh','w')
-        newshstr = shtemplate.replace('ANALYZER',analyzer).replace('FNAMEKEYWORD',fname).replace('FOUT',foutname)
+        newshstr = shtemplate.replace('ANALYZER',analyzer).replace('FNAMEKEYWORD',fname).replace('DOUT',dout).replace('FOUT',foutname)
         newsh.write(newshstr)
         newsh.close()
         if not os.path.exists('output/'+fnamekeyword.replace(' ','')): 
@@ -101,7 +106,7 @@ Error = CWD/jobs/JOBKEY.err
 Log = CWD/jobs/JOBKEY.log
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
-transfer_input_files=CWD/tools, CWD/filelists
+transfer_input_files=CWD/tools, CWD/filelists, CWD/tools/dataset_bdt_2016_T5Wg_m1900_100trees_4maxdepth/weights
 x509userproxy = $ENV(X509_USER_PROXY)
 Queue 1
 '''
@@ -123,7 +128,7 @@ python ANALYZER FNAMEKEYWORD
 
 for f in *.root
 do 
-   xrdcp -f "$f" root://cmseos.fnal.gov//store/user/lpcsusyphotons/TreeMakerRandS_mvaprep/FOUT
+   xrdcp -f "$f" root://cmseos.fnal.gov//store/user/lpcsusyphotons/DOUT/FOUT
 done
 rm *.root
 '''
