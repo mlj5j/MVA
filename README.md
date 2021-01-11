@@ -4,7 +4,25 @@ This is used for training and testing a boosted decision tree for discrimating b
 
 ##  Getting Started
 Clone the repository to your workspace
-From the MVA directory do
+
+#  Prepare files for MVA
+Go to the tools directory and open "submitjobs.py".  Make sure it's reading the txt file "filelist_skimmed.txt".
+From the MVA directory you can open the file `submitcommands.sh`.  This file contains the commands for submitting jobs to condor for each keyword/dataset.  Make sure all of the commands that include "applyBDT.py" are commented.  
+
+#  Apply BDT
+In the MVA directory you can use the following command (I'll probably automate this eventually):
+```
+xrdfsls /store/group/lpcsusyphotons/TreeMakerRandS_mvaprep > filelists/filelist_mva.txt
+```
+
+Go to "submitjobs.py" in the tools directory and change the file being read to "filelist_mva.txt".
+
+Go back to the `submitcommands.sh`, comment the lines with "prepMVA", and uncomment the lines with "applyBDT.py".  This will submit jobs to condor to apply the BDT to all of the files.  
+
+
+#Ignore the rest of this README because it's older and needs to be updated.
+
+
 
 ```
 mkdir Results
