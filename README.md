@@ -1,4 +1,4 @@
-## SUSY diphoton MVA
+# SUSY diphoton MVA
 
 This is used for training and testing a boosted decision tree for discrimating between real and fake MET.
 
@@ -18,9 +18,6 @@ xrdfsls /store/group/lpcsusyphotons/TreeMakerRandS_mvaprep > filelists/filelist_
 Go to "submitjobs.py" in the tools directory and change the file being read to "filelist_mva.txt".
 
 Go back to the `submitcommands.sh`, comment the lines with "prepMVA", and uncomment the lines with "applyBDT.py".  This will submit jobs to condor to apply the BDT to all of the files.  
-
-
-#  Ignore the rest of this README because it's older and needs to be updated.
 
 
 <!---
