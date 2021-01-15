@@ -90,14 +90,14 @@ loader.AddBackgroundTree(bkg, 1.0)
 
 if args.mode == 'RandS':
 #     loader.AddVariable('mva_Ngoodjets','I')
-     loader.AddVariable('mva_ST','F')
-     loader.AddVariable('mva_Pt_jets','F')
+#     loader.AddVariable('mva_ST','F')
+     loader.AddVariable('mva_Pt_jets/mva_ST','F')
      loader.AddVariable('mva_dPhi_GG','F')
-     loader.AddVariable('mva_Photons0Et','F')
-     loader.AddVariable('mva_Photons1Et','F')
-     loader.AddVariable('mva_HardMET','F')
-     loader.AddVariable('mva_Pt_GG','F')
-     loader.AddVariable('mva_ST_jets','F')
+     loader.AddVariable('mva_Photons0Et/mva_ST','F')
+     loader.AddVariable('mva_Photons1Et/mva_ST','F')
+     loader.AddVariable('mva_HardMET/mva_ST','F')
+     loader.AddVariable('mva_Pt_GG/mva_ST','F')
+     loader.AddVariable('mva_ST_jets/mva_ST','F')
      loader.AddVariable('mva_min_dPhi','F')
      loader.AddVariable('mva_dPhi1','F')
      loader.AddVariable('mva_dPhi2','F')
@@ -129,7 +129,7 @@ sigcuts = TCut('min_dPhi>-1 && min_dPhi<10 && Photons_isEB[0]==1 && Photons_isEB
 bkgcuts = TCut('min_dPhi>-1 && min_dPhi<10 && Photons_isEB[0]==1 && Photons_isEB[1]==1 && Photons[0].Et()>80 && Photons[1].Et()>80 && mva_Ngoodjets>1')
 
 sigcuts_RandS = TCut('Pho1_hasPixelSeed==0 && Pho2_hasPixelSeed==0 && IsRandS==0 && HardMETPt>110 && Photons_isEB[0]==1 && Photons_isEB[1]==1 && mva_Ngoodjets>1 && mva_Photons0Et>80 && mva_Photons1Et>80')
-bkgcuts_RandS = TCut('Pho1_hasPixelSeed==0 && Pho2_hasPixelSeed===0 && HardMETPt>110 && Photons_isEB[0]==1 && Photons_isEB[1]==1 && mva_Ngoodjets>1 && mva_Photons0Et>80 && mva_Photons1Et>80')
+bkgcuts_RandS = TCut('Pho1_hasPixelSeed==0 && Pho2_hasPixelSeed==0 && HardMETPt>110 && Photons_isEB[0]==1 && Photons_isEB[1]==1 && mva_Ngoodjets>1 && mva_Photons0Et>80 && mva_Photons1Et>80')
 
 
 #Prepare trees for training and testing (I think this just applies the cuts)
