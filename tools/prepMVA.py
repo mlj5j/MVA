@@ -64,6 +64,8 @@ EventWeight = np.zeros(1,dtype=float)
 mva_dPhi1 = np.zeros(1,dtype=float)
 mva_dPhi2 = np.zeros(1,dtype=float)
 mva_minOmega = np.zeros(1,dtype=float)
+PhotonsAUX = ROOT.std.vector('TLorentzVector')()
+
 
 xsec = np.zeros(1,dtype=float)
 
@@ -77,6 +79,7 @@ b_EventWeight = tree.Branch('EventWeight', EventWeight, 'EventWeight/D')
 b_mva_dPhi1 = tree.Branch('mva_dPhi1', mva_dPhi1, 'mva_dPhi1/D')
 b_mva_dPhi2 = tree.Branch('mva_dPhi2', mva_dPhi2, 'mva_dPhi2/D')
 b_mva_minOmega = tree.Branch('mva_minOmega', mva_minOmega, 'mva_minOmega/D')
+b_PhotonsAUX = tree.Branch('PhotonsAUX', PhotonsAUX)
 
 #entries = 5
 for j_entry in range(entries):
@@ -102,6 +105,15 @@ for j_entry in range(entries):
     
     if IsEnriched:
         xsec[0] = 113100.0
+
+    PhotonsAUX.clear()
+    for ipho, pho in enumerate(ch.Photons):
+        if not pho.Pt()>75: continue
+        if not bool(ch.Photons_fullID[ipho]): continue
+        if not abs(pho.Eta())<2.4: continue
+        tlvpho = TLorentzVector()
+        tlvpho.SetPtEtaPhiE(pho.Pt(), pho.Eta(), pho.Phi(), pho.E())
+        PhotonsAUX.push_back(tlvpho)
 
     dphi = 99.0
     minomega = 99.0
@@ -134,6 +146,7 @@ for j_entry in range(entries):
     mva_dPhi2[0] = abs(dphi2)
 #    mva_dPhi1[0] = min(abs(ch.JetsAUX[0].Phi() - ch.HardMETPhi), abs(ch.HardMETPhi - ch.JetsAUX[0].Phi()))
 #    mva_dPhi2[0] = min(abs(ch.JetsAUX[1].Phi() - ch.HardMETPhi), abs(ch.HardMETPhi - ch.JetsAUX[1].Phi()))
+
 
      
     if ch.IsRandS:

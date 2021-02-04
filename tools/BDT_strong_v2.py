@@ -16,12 +16,13 @@ parser = argparse.ArgumentParser(description="Training BDT to separate real and 
 
 
 
-parser.add_argument('-s', '--signal', dest='sig_name', help='This is the sample used for signal, ie ZGGtonunuGG ')
-parser.add_argument('-y', dest='year', help='This is the year (obviously)')
+parser.add_argument('-s1', '--signal1', dest='sig_name1', default='SMS-T5Wg_m19', help='This is the sample used for signal, ie ZGGtonunuGG ')
+parser.add_argument('-s2', '--signal2', dest='sig_name2', default='SMS-T6Wg_m17', help='This is the sample used for signal, ie ZGGtonunuGG ')
+parser.add_argument('-y', dest='year', default='2016', help='This is the year (obviously)')
 #parser.add_argument('-y2', dest='year2', default='0', help='This is the second year to include. Leave blank if only doing one year')
 #parser.add_argument('-y3', dest='year3', default='0', help='This is the third year to include. Leave blank if only doing one year')
 
-parser.add_argument('-b', '--background', dest='back_name', help='This is the sample used for the backbaround, ie GJets or QCD')
+parser.add_argument('-b', '--background', dest='back_name', default='GJets_DR', help='This is the sample used for the backbaround, ie GJets or QCD')
 
 parser.add_argument('-m', '--mode', dest='mode', default='RandS', help='If training on RandS samples, you should put RandS here.')
 
@@ -32,7 +33,8 @@ parser.add_argument('-md', '--maxdepth', dest='maxdepth', type = int, help = 'Th
 args = parser.parse_args()
 
 year = args.year
-sig_name = args.sig_name
+sig_name1 = args.sig_name1
+sig_name2 = args.sig_name2
 back_name = args.back_name
 
 #Read file lists to make TChains.  There should be one TChain for signal and one for background
@@ -44,29 +46,38 @@ else:
      sig = TChain("PreSelection")
      bkg = TChain('PreSelection')
 
-Isfastsim = False
+Isfastsim1 = False
+Isfastsim2 = False
 
-if 'SMS' in sig_name:
-     Isfastsim = True
+if 'SMS' in sig_name1:
+     Isfastsim1 = True
+if 'SMS' in sig_name2:
+     Isfastsim2 = True
+
 
 if '2016' in year:
-     sig_name = 'Summer16v3Fast.{0}'.format(sig_name)
+     sig_name1 = 'Summer16v3Fast.{0}'.format(sig_name1)
+     sig_name2 = 'Summer16v3Fast.{0}'.format(sig_name2)
      back_name = 'Summer16v3.{0}'.format(back_name)
 if '2017' in year:
-     sig_name = 'Fall17Fast.{0}'.format(sig_name)
+     sig_name1 = 'Fall17Fast.{0}'.format(sig_name1)
+     sig_name2 = 'Fall17Fast.{0}'.format(sig_name2)
      back_name = 'Fall17.{0}'.format(back_name)
 if '2018' in year:
-     sig_name = 'Autumn18Fast.{0}'.format(sig_name)
+     sig_name1 = 'Autumn18Fast.{0}'.format(sig_name1)
+     sig_name2 = 'Autumn18Fast.{0}'.format(sig_name2)
      back_name = 'Autumn18.{0}'.format(back_name)
 
-if not Isfastsim:
-     sig_name = sig_name.replace('Fast','')
+if not Isfastsim1:
+     sig_name1 = sig_name1.replace('Fast','')
+if not Isfastsim2:
+     sig_name2 = sig_name2.replace('Fast','')
 
 
 
 flist = open('../filelists/filelist_mvaprepped.txt')
 for line in flist:
-     if sig_name in line:
+     if sig_name1 in line or sig_name2 in line:
           sig.Add('root://cmseos.fnal.gov/{0}'.format(line.strip()))
      if back_name in line:
           bkg.Add('root://cmseos.fnal.gov/{0}'.format(line.strip()))
@@ -92,7 +103,7 @@ if args.mode == 'RandS':
 #     loader.AddVariable('mva_Ngoodjets','I')
 #     loader.AddVariable('mva_ST','F')
      loader.AddVariable('mva_Pt_jets/mva_ST','F')
-     loader.AddVariable('mva_dPhi_GG','F')
+     loader.AddVariable('abs(mva_dPhi_GG)','F')
      loader.AddVariable('mva_Photons0Et/mva_ST','F')
      loader.AddVariable('mva_Photons1Et/mva_ST','F')
      loader.AddVariable('mva_HardMET/mva_ST','F')
@@ -101,7 +112,7 @@ if args.mode == 'RandS':
      loader.AddVariable('mva_min_dPhi','F')
      loader.AddVariable('mva_dPhi1','F')
      loader.AddVariable('mva_dPhi2','F')
-     loader.AddVariable('mva_dPhi_GGHardMET','F')
+     loader.AddVariable('abs(mva_dPhi_GGHardMET)','F')
 #     loader.AddVariable('mva_minOmega','F')
      loader.AddSpectator('mva_Ngoodjets', 'I')
 #     loader.AddVariable('mass_GG','F')
@@ -128,10 +139,10 @@ else:
 sigcuts = TCut('min_dPhi>-1 && min_dPhi<10 && Photons_isEB[0]==1 && Photons_isEB[1]==1 && Photons[0].Et()>80 && Photons[1].Et()>80 && mva_Ngoodjets>1') 
 bkgcuts = TCut('min_dPhi>-1 && min_dPhi<10 && Photons_isEB[0]==1 && Photons_isEB[1]==1 && Photons[0].Et()>80 && Photons[1].Et()>80 && mva_Ngoodjets>1')
 
-sigcuts_RandS = TCut('Pho1_hasPixelSeed==0 && Pho2_hasPixelSeed==0 && IsRandS==0 && HardMETPt>110 && Photons_isEB[0]==1 && Photons_isEB[1]==1 && mva_Ngoodjets>1 && mva_Photons0Et>80 && mva_Photons1Et>80')
-bkgcuts_RandS = TCut('Pho1_hasPixelSeed==0 && Pho2_hasPixelSeed==0 && HardMETPt>110 && Photons_isEB[0]==1 && Photons_isEB[1]==1 && mva_Ngoodjets>1 && mva_Photons0Et>80 && mva_Photons1Et>80')
+sigcuts_RandS = TCut('Pho1_hasPixelSeed==0 && Pho2_hasPixelSeed==0 && IsRandS==0 && HardMETPt>110 && abs(PhotonsAUX[0].Eta())<1.442 && abs(PhotonsAUX[1].Eta())<1.442 && mva_Ngoodjets>1 && mva_Photons0Et>80 && mva_Photons1Et>80 && abs(HardMetMinusMet)<90 && NVtx>0 && TriggerPass[21] && NPhotonsLoose==2')
+bkgcuts_RandS = TCut('Pho1_hasPixelSeed==0 && Pho2_hasPixelSeed==0 && IsRandS==1 && HardMETPt>110 && abs(PhotonsAUX[0].Eta())<1.442 && abs(PhotonsAUX[1].Eta())<1.442 && mva_Ngoodjets>1 && mva_Photons0Et>80 && mva_Photons1Et>80 && abs(HardMetMinusMet)<90 && NVtx>0 && TriggerPass[21] && NPhotonsLoose==2')
 
-
+#&& HBHENoiseFilter && HBHEIsoNoiseFilter && BadMuonFilter && BadChargedCandidateFilter && eeBadScFilter && BadPFMuonFilter && globalSuperTightHalo2016Filter && CSCTightHaloFilter && EcalDeadCellTriggerPrimitiveFilter && ecalBadCalibReducedExtraFilter && ecalBadCalibReducedFilter && NVtx>0 && TriggerPass[21]
 #Prepare trees for training and testing (I think this just applies the cuts)
 if args.mode == 'RandS':
      loader.PrepareTrainingAndTestTree(sigcuts_RandS, bkgcuts_RandS, "SplitMode=random:!V")

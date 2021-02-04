@@ -9,7 +9,7 @@ gROOT.SetBatch(1)
 
 fname = sys.argv[1]
 print 'Loading {0}'.format(fname)
-
+#bdtname = sys.argv[2]
 
 tcounter = TTree('tcounter', 'tcounter')
 
@@ -63,7 +63,7 @@ mva_Ngoodjets = array('i',[0])
 reader = TMVA.Reader()
 #reader.AddVariable('mva_ST', mva_ST)
 reader.AddVariable('mva_Pt_jets/mva_ST', mva_Pt_jets)
-reader.AddVariable('mva_dPhi_GG', mva_dPhi_GG)
+reader.AddVariable('abs(mva_dPhi_GG)', mva_dPhi_GG)
 reader.AddVariable('mva_Photons0Et/mva_ST', mva_Photons0Et)
 reader.AddVariable('mva_Photons1Et/mva_ST', mva_Photons1Et)
 reader.AddVariable('mva_HardMET/mva_ST', mva_HardMET)
@@ -72,12 +72,12 @@ reader.AddVariable('mva_ST_jets/mva_ST', mva_ST_jets)
 reader.AddVariable('mva_min_dPhi', mva_min_dPhi)
 reader.AddVariable('mva_dPhi1', mva_dPhi1)
 reader.AddVariable('mva_dPhi2', mva_dPhi2)
-reader.AddVariable('mva_dPhi_GGHardMET', mva_dPhi_GGHardMET)
+reader.AddVariable('abs(mva_dPhi_GGHardMET)', mva_dPhi_GGHardMET)
 #reader.AddVariable('mva_minOmega', mva_minOmega)
 reader.AddSpectator('mva_Ngoodjets', mva_Ngoodjets)
 
 #reader.BookMVA("BDT",'TMVAClassification_BDT_100trees_4maxdepth.weights.xml')
-reader.BookMVA("BDT",'tools/dataset_bdt_2016_T5Wg_m19XX_normalized_200trees_4maxdepth/weights/TMVAClassification_BDT_200trees_4maxdepth.weights.xml')
+reader.BookMVA("BDT",'tools/BDT_weights/dataset_bdt_2016_T5Wg_m19XX_T6Wg_m17XX_normalized_gridsearc2_200trees_4maxdepth/weights/TMVAClassification_BDT_200trees_4maxdepth.weights.xml')
  
 #--------------Adding branches--------------------------------------------
 
@@ -105,14 +105,14 @@ for j_entry in range(entries):
 
     mva_ST[0] = ch.mva_ST
     mva_Pt_jets[0] = ch.mva_Pt_jets/ch.mva_ST
-    mva_dPhi_GG[0] = ch.mva_dPhi_GG
+    mva_dPhi_GG[0] = abs(ch.mva_dPhi_GG)
     mva_Photons0Et[0] = ch.mva_Photons0Et/ch.mva_ST
     mva_Photons1Et[0] = ch.mva_Photons1Et/ch.mva_ST
     mva_HardMET[0] = ch.mva_HardMET/ch.mva_ST
     mva_Pt_GG[0] = ch.mva_Pt_GG/ch.mva_ST
     mva_ST_jets[0] = ch.mva_ST_jets/ch.mva_ST
     mva_min_dPhi[0] = ch.mva_min_dPhi
-    mva_dPhi_GGHardMET[0] = ch.mva_dPhi_GGHardMET
+    mva_dPhi_GGHardMET[0] = abs(ch.mva_dPhi_GGHardMET)
     mva_dPhi1[0] = ch.mva_dPhi1
     mva_dPhi2[0] = ch.mva_dPhi2
     mva_BDTstrong_v2[0] = reader.EvaluateMVA('BDT')

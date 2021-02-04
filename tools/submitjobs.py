@@ -6,14 +6,21 @@ parser.add_argument("-analyzer", "--analyzer", type=str,default='tools/applyXsec
 parser.add_argument("-fin", "--fnamekeyword", type=str,default='Summer16.SMS-T1tttt_mGluino-1200_mLSP-800',help="file")
 parser.add_argument("-quickrun", "--quickrun", type=bool, default=False,help="Quick practice run (True, False)")
 parser.add_argument("-forcetemplates", "--forcetemplates", type=str, default=False,help="you can use this to override the template choice")
+parser.add_argument("-filelist", "--filelist", type=str, default='filelists/filelist_skimmed.txt', help='This is the filelist to be used with the analyzer')
 parser.add_argument('-dout', '--directoryout', type=str, default='TreeMakerRandS_mvaprep', help='This is the directory where the output will go.  NOTE: This is not the full path!')
+#parser.add_argument('-bdt', '--bdtname', type=str, default='', help='name of the bdt')
 
 args = parser.parse_args()
 
 fnamekeyword = args.fnamekeyword.strip()
 quickrun = args.quickrun
 analyzer = args.analyzer
-dout = args.directoryout
+dout = args.directoryout        
+#bdtname = args.bdtname
+
+#bdtpath = ''
+#if len(bdtname) > 2:
+#        bdtpath = 'dataset_bdt_{0}/TMVAClassification_BDT_{1}_{2}/weights.xml'.format(bdtname, bdtname.split('_')[7], bdtname.split('_')[8])
 
 istest = False
 skipFilesWithErrorFile = True
@@ -33,9 +40,9 @@ cwd = os.getcwd()
 
 #fnamefilename = 'usefulthings/filelistDiphotonBig.txt'
 #fnamefilename = 'usefulthings/filelist_test.txt'
-#fnamefilename = 'filelists/filelist_mvapreped.txt'
-
-fnamefilename = 'filelists/filelist_skimmed.txt'
+#fnamefilename = 'filelists/filelist_mvaprepped.txt'
+fnamefilename = args.filelist
+#fnamefilename = 'filelists/filelist_skimmed.txt'
 fnamefile = open(fnamefilename)
 
 
@@ -106,7 +113,7 @@ Error = CWD/jobs/JOBKEY.err
 Log = CWD/jobs/JOBKEY.log
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
-transfer_input_files=CWD/tools, CWD/filelists, CWD/tools/dataset_bdt_2016_T5Wg_m1900_100trees_4maxdepth/weights
+transfer_input_files=CWD/tools, CWD/filelists, CWD/tools/BDT_weights/dataset_bdt_2016_T5Wg_m19XX_T6Wg_m17XX_normalized_gridsearch2_200trees_4maxdepth/weights
 x509userproxy = $ENV(X509_USER_PROXY)
 Queue 1
 '''
