@@ -113,9 +113,20 @@ if args.mode == 'RandS':
      loader.AddVariable('mva_dPhi1','F')
      loader.AddVariable('mva_dPhi2','F')
      loader.AddVariable('abs(mva_dPhi_GGHardMET)','F')
-#     loader.AddVariable('mva_minOmega','F')
+     loader.AddVariable('mva_dRjet1photon1','F')
+     loader.AddVariable('mva_dRjet1photon2','F')
+     loader.AddVariable('mva_dRjet2photon1','F')
+     loader.AddVariable('mva_dRjet2photon2','F')
+#     loader.AddVariable('JetsClean[0].Pt()/PhotonsLoose[0].Pt()','F')
+#     loader.AddVariable('mva_Pt_jets/mva_Pt_GG')
      loader.AddSpectator('mva_Ngoodjets', 'I')
+#     loader.AddSpectator('EventWeight', 'F')
+
+#     loader.SetWeightExpression("EventWeight")
 #     loader.AddVariable('mass_GG','F')
+
+
+
 
 else:
 #Add variables and spectators to factory
@@ -136,11 +147,11 @@ else:
      loader.AddVariable('dPhi_GGHardMET','F')
 
 #Define cuts to be applied
-sigcuts = TCut('min_dPhi>-1 && min_dPhi<10 && Photons_isEB[0]==1 && Photons_isEB[1]==1 && Photons[0].Et()>80 && Photons[1].Et()>80 && mva_Ngoodjets>1') 
-bkgcuts = TCut('min_dPhi>-1 && min_dPhi<10 && Photons_isEB[0]==1 && Photons_isEB[1]==1 && Photons[0].Et()>80 && Photons[1].Et()>80 && mva_Ngoodjets>1')
+sigcuts = TCut('min_dPhi>-1 && min_dPhi<10 && Photons_isEB[0]==1 && Photons_isEB[1]==1 && PhotonsLoose[0].Et()>80 && PhotonsLoose[1].Et()>80 && mva_Ngoodjets>1') 
+bkgcuts = TCut('min_dPhi>-1 && min_dPhi<10 && Photons_isEB[0]==1 && Photons_isEB[1]==1 && PhotonsLoose[0].Et()>80 && PhotonsLoose[1].Et()>80 && mva_Ngoodjets>1')
 
-sigcuts_RandS = TCut('Pho1_hasPixelSeed==0 && Pho2_hasPixelSeed==0 && IsRandS==0 && HardMETPt>110 && abs(PhotonsAUX[0].Eta())<1.442 && abs(PhotonsAUX[1].Eta())<1.442 && mva_Ngoodjets>1 && mva_Photons0Et>80 && mva_Photons1Et>80 && abs(HardMetMinusMet)<90 && NVtx>0 && TriggerPass[21] && NPhotonsLoose==2')
-bkgcuts_RandS = TCut('Pho1_hasPixelSeed==0 && Pho2_hasPixelSeed==0 && IsRandS==1 && HardMETPt>110 && abs(PhotonsAUX[0].Eta())<1.442 && abs(PhotonsAUX[1].Eta())<1.442 && mva_Ngoodjets>1 && mva_Photons0Et>80 && mva_Photons1Et>80 && abs(HardMetMinusMet)<90 && NVtx>0 && TriggerPass[21] && NPhotonsLoose==2')
+sigcuts_RandS = TCut('Pho1_hasPixelSeed==0 && Pho2_hasPixelSeed==0 && IsRandS==0 && HardMETPt>100 && mva_Ngoodjets>1 && mva_Photons0Et>80 && mva_Photons1Et>80 && abs(HardMetMinusMet)<90 && NVtx>0 && NPhotons==2 && (abs(analysisPhotons[0].Eta())<1.442 || abs(analysisPhotons[1].Eta())<1.442)')
+bkgcuts_RandS = TCut('Pho1_hasPixelSeed==0 && Pho2_hasPixelSeed==0 && IsRandS==1 && HardMETPt>100 && mva_Ngoodjets>1 && mva_Photons0Et>80 && mva_Photons1Et>80 && abs(HardMetMinusMet)<90 && NVtx>0 && NPhotons==2 && (abs(analysisPhotons[0].Eta())<1.442 || abs(analysisPhotons[1].Eta())<1.442)')
 
 #&& HBHENoiseFilter && HBHEIsoNoiseFilter && BadMuonFilter && BadChargedCandidateFilter && eeBadScFilter && BadPFMuonFilter && globalSuperTightHalo2016Filter && CSCTightHaloFilter && EcalDeadCellTriggerPrimitiveFilter && ecalBadCalibReducedExtraFilter && ecalBadCalibReducedFilter && NVtx>0 && TriggerPass[21]
 #Prepare trees for training and testing (I think this just applies the cuts)
